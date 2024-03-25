@@ -1,0 +1,63 @@
+﻿@model WebApp_Model.AdminPortalModels.CourseModels.Course
+
+@{
+    Layout = null;
+}
+
+<form asp-controller="Course" asp-action="EditCourse" method="post" id="course-edit-form">
+
+    <input type="hidden" id="hndFacultyId" name="FacultyId" value="@Model.FacultyId" />
+    <input type="hidden" id="CourseId" name="CourseId" value="@Model.CourseId" />
+
+    <div class="modal-header">
+        <h5 class="modal-title">Update Faculty</h5>
+        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+    </div>
+
+    <div class="modal-body">
+        <div class="row">
+
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="Faculty.FacultyId" class="col-form-label">@Html.DisplayNameFor(model => model.Faculty.FacultyId)</label>
+                    <select class="select2 custom-select selectFaculty" id="FacultyId" name="FacultyId"></select>
+                </div>
+            </div>
+
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="CourseCode" class="col-form-label">@Html.DisplayNameFor(model => model.CourseCode)</label>
+                    <input class="form-control" type="text" name="CourseCode" id="CourseCode" placeholder="@Html.DisplayNameFor(model => model.CourseCode)" value="@Model.CourseCode">
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="form-group">
+                    <label asp-for="CourseName" class="col-form-label">@Html.DisplayNameFor(model => model.CourseName)</label>
+                    <input class="form-control" type="text" name="CourseName" id="CourseName" placeholder="@Html.DisplayNameFor(model => model.CourseName)" value="@Model.CourseName">
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="form-group">
+                    <label asp-for="CourseDescription" class="col-form-label">@Html.DisplayNameFor(model => model.CourseDescription)</label>
+                    @Html.TextAreaFor(model => model.CourseDescription, new { id = "courseDescription", name = "courseDescription", @class = "form-control" })
+                    @* <input class="form-control" type="text" name="CourseName" id="CourseName" placeholder="@Html.DisplayNameFor(model => model.CourseName)"> *@
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="form-group">
+                    <label asp-for="CourseCredit" class="col-form-label">@Html.DisplayNameFor(model => model.CourseCredit)</label>
+                    <input class="form-control" type="text" name="CourseCredit" id="CourseCredit" placeholder="@Html.DisplayNameFor(model => model.CourseCredit)" value="@Model.CourseCredit">
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+    </div>
+</form>

@@ -1,0 +1,386 @@
+﻿@using WebApp.Helpers
+
+@model IEnumerable<WebApp_Model.AdminPortalModels.CourseModels.Course>
+
+@{
+    ViewData["Title"] = "Course";
+    Layout = "~/Views/Shared/_Admin_Master_Layout.cshtml";
+}
+
+<div class="main-content-inner">
+    <div class="container">
+        <!-- button srea start -->
+        <div class="row mt-5">
+
+            <div class="col-md-10">
+                <div class="breadcrumbs-area clearfix mt-2">
+                    <h4 class="page-title pull-left">Dashboard</h4>
+                    <ul class="breadcrumbs pull-left">
+                        <li><a href="@Url.Action("Index", "Dashboard")">Home</a></li>
+                        <li><span>Course Managment</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-2 text-right">
+                <button id="create-new-course" class="btn btn-rounded btn-primary mb-3" data-action-url="/AdminPortal/Course/CreateCourse">Create New Course</button>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <!-- Dark table start -->
+            <div class="col-12 mt-5">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="header-title">Course List</h4>
+                        <div class="data-tables datatable-dark">
+                            <table id="dataTable34" class="text-center dt-datatable-data">
+                                <thead class="text-capitalize">
+                                    <tr>
+                                        <th></th>
+                                        <th>Faculty Name</th>
+                                        <th>Course Code</th>
+                                        <th>Course Name</th>
+                                        <th>Course Description</th>
+                                        <th>Course Credit</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Dark table end -->
+
+        </div>
+    </div>
+</div>
+
+@Html.RenderAction("CourseModal", "Course");
+
+@section scripts {
+
+    <script type="text/javascript">
+
+        var facultyDataTable;
+
+        $(document).ready(function () {
+
+            loadCourseDataTable();
+
+            loadCourseModal();
+
+        });
+
+        function loadCourseDataTable() {
+
+            try {
+                courseDataTable.destroy();
+            } catch (e) {
+
+            }
+
+            courseDataTable = $('.dt-datatable-data').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "fixedHeader": true,
+                "autoWidth": false,
+                "pageLength": 10,
+                "ajax": {
+                    "url": "/AdminPortal/Course/LoadCourseData",
+                    "type": "POST",
+                    "datatype": "json",
+                    "data": ""
+                },
+                "columns": [
+                    {
+                        "render": function (data, type, row, meta) {
+                            return '<a href="#" class="course-edit-btn" data-courseid="' + row.courseId + '"><i class="fa fa-pencil-square fa-lg"></i></a>' +
+                                '<span style="margin: 0 5px;"></span>' +
+                                '<a href="#" class="course-delete-btn" data-courseid="' + row.courseId + '" data-coursename="' + row.courseName + '"><i class="fa fa-trash fa-lg"></i></a>';
+                        },
+                        "className": "text-center",
+                        "orderable": false,
+                        "autoWidth": true
+                    },
+                    {
+                        "data": function (row) {
+                            return row.faculty.facultyName; 
+                        }, "name": "faculty.facultyName", "autoWidth": true, "className": "text-left"
+                    },
+                    { "data": "courseCode", "name": "courseCode", "autoWidth": true, "className": "text-left" },
+                    { "data": "courseName", "name": "courseName", "autoWidth": true, "className": "text-left" },
+                    { "data": "courseDescription", "name": "courseDescription", "autoWidth": true, "className": "text-left" },
+                    { "data": "courseCredit", "name": "courseCredit", "autoWidth": true, "className": "text-left" }
+                ],
+                "columnDefs": [
+                    { "targets": 0, "width": "10%", "orderable": false, "autoWidth": false, "visible": true },
+                ],
+                "drawCallback": function (settings) {
+
+                    onCourseTableLoad();
+
+                }
+            });
+
+
+        }
+
+        function loadCourseModal() {
+
+
+            $('#create-new-course').click(function () {
+
+                var actionUrl = $(this).data("action-url");
+
+                $("#course-modal-content").load(actionUrl, function () {
+
+                    $("#course-modal").modal('show');
+
+                    $.getJSON("Course/GetFacultyListJson", function (data) {
+
+                        $(".selectFaculty").empty().select2({
+                            placeholder: "Select  Faculty",
+                            width: "100%",
+                            data: data.map(function (item) {
+                                return { id: item.facultyId, text: item.facultyName };
+                            })
+                        });
+
+                    });
+
+                    newCourseSubmitFunction();
+                });
+
+
+            });
+
+        }
+
+        function newCourseSubmitFunction() {
+
+            $('#course-create-form').submit(function (e) {
+                e.preventDefault();
+
+                var formData = $(this).serialize();
+
+                //loading message
+                Swal.fire({
+                    title: 'Please wait...',
+                    allowOutsideClick: false,
+                    onBeforeOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                $("#course-modal").modal('hide');
+
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("CreateCourse", "Course")',
+                    data: formData,
+                    success: function (response) {
+
+                        if (response.success) {
+
+                            //success message
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: 'Course created successfully!'
+                            });
+
+                            loadCourseDataTable();
+
+                        } else {
+
+                            //error message
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: response.message || 'An error occurred while creating Course. Please try again later.'
+                            });
+
+                        }
+
+                        $('#course-create-form')[0].reset();
+
+                    },
+                    error: function (xhr, status, error) {
+
+                        //error message
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'An error occurred while creating Course. Please try again later.'
+                        });
+
+                    }
+                });
+            });
+
+        }
+
+        function onCourseTableLoad() {
+
+            $(".course-edit-btn").click(function () {
+
+                var courseId = $(this).data("courseid");
+
+                var actionUrl = '@Url.Action("EditCourse", "Course")' + '?courseId=' + courseId;
+
+                $("#course-modal-content").load(actionUrl, function () {
+
+                    $("#course-modal").modal('show');
+
+                    $.getJSON("Course/GetFacultyListJson", function (data) {
+
+                        $(".selectFaculty").empty().select2({
+                            placeholder: "Select  Faculty",
+                            width: "100%",
+                            data: data.map(function (item) {
+                                return { id: item.facultyId, text: item.facultyName };
+                            })
+                        });
+
+                        var facultyId = $("#hndFacultyId").val();
+                        $("#FacultyId").val(facultyId).trigger("change");
+
+                    });
+
+                    updateCourseSubmitFunction();
+                });
+            });
+
+            $(".course-delete-btn").click(function () {
+
+                var courseId = $(this).data("courseid");
+                var courseName = $(this).data("coursename");
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert " + courseName + " again!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+
+                        $.ajax({
+                            type: 'GET',
+                            url: '@Url.Action("DeleteCourse", "Course")',
+                            data: { courseId: courseId },
+                            success: function (response) {
+                                if (response.success) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Deleted!',
+                                        text: courseName + ' Course has been deleted.',
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    });
+
+                                    loadCourseDataTable();
+
+                                } else {
+
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: response.message || 'An error occurred while deleting course. Please try again later.'
+                                    });
+                                }
+                            },
+                            error: function (xhr, status, error) {
+
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'An error occurred while deleting course. Please try again later.'
+                                });
+                                console.error(xhr.responseText);
+                            }
+                        });
+
+                    }
+
+                });
+            });
+
+        }
+
+        function updateCourseSubmitFunction() {
+
+            $('#course-edit-form').submit(function (e) {
+                e.preventDefault();
+
+                var formData = $(this).serialize();
+
+                //loading message
+                Swal.fire({
+                    title: 'Please wait...',
+                    allowOutsideClick: false,
+                    willOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+
+                $("#course-modal").modal('hide');
+
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("EditCourse", "Course")',
+                    data: formData,
+                    success: function (response) {
+
+                        if (response.success) {
+
+                            //success message
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: 'Course updated successfully!',
+                                showConfirmButton: true,
+                            });
+
+                            loadCourseDataTable();
+
+                        } else {
+
+                            //error message
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: response.message || 'An error occurred while creating Course. Please try again later.'
+                            });
+
+                        }
+
+                        $('#course-edit-form')[0].reset();
+
+                    },
+                    error: function (xhr, status, error) {
+
+                        //error message
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'An error occurred while creating course. Please try again later.'
+                        });
+
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+
+        }
+
+
+    </script>
+
+}

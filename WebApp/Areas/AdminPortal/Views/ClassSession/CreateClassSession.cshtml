@@ -1,0 +1,52 @@
+﻿@model WebApp_Model.AdminPortalModels.TimeTableModels.ClassSession
+
+@{
+    Layout = null;
+}
+
+
+<form asp-controller="ClassSession" asp-action="CreateClassSession" method="post" id="classsession-create-form">
+    <div class="modal-header">
+        <h5 class="modal-title">New Class Session</h5>
+        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+    </div>
+
+    <div class="modal-body">
+        <div class="row">
+
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="Faculty.FacultyId" class="col-form-label">@Html.DisplayNameFor(model => model.Faculty.FacultyId)</label>
+                    <select class="select2 custom-select selectFaculty" id="FacultyId" name="FacultyId"></select>
+                </div>
+            </div>
+
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="Course.CourseId" class="col-form-label">@Html.DisplayNameFor(model => model.Course.CourseId)</label>
+                    <select class="select2 custom-select selectCourse" id="CourseId" name="CourseId"></select>
+                </div>
+            </div>
+
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="SessionDateTime" class="col-form-label">@Html.DisplayNameFor(model => model.SessionDateTime)</label>
+                    <input class="form-control" type="datetime-local" name="SessionDateTime" id="SessionDateTime" placeholder="@Html.DisplayNameFor(model => model.SessionDateTime)">
+                </div>
+            </div>
+
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="LocationEnum" class="col-form-label">@Html.DisplayNameFor(model => model.LocationEnum)</label>
+                    <select class="select2 custom-select selectLocation" id="LocationEnum" name="LocationEnum"></select>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+    </div>
+</form>

@@ -1,0 +1,80 @@
+﻿@model WebApp.Models.UserModels.UserModel
+
+@{
+    Layout = "~/Views/Shared/_Signup_Layout.cshtml";
+    ViewData["SignUp"] = "Sign Up";
+}
+
+<!-- login area start -->
+<div class="login-area login-bg">
+    <div class="container">
+        <div class="login-box ptb--100">
+            <form asp-controller="User" asp-action="SignUp" method="post" id="signup-form" enctype="multipart/form-data">
+                <div class="login-form-head">
+                    <h4>Sign up</h4>
+                    <p>Hello there, Sign up and Join with Us</p>
+                </div>
+                <div class="login-form-body">
+                    <div class="form-gp">
+                        <label for="FullName">@Html.DisplayNameFor(model => model.FirstName)</label>
+                        <input type="text" id="FullName" name="FirstName">
+                        <i class="ti-user"></i>
+                        <div class="text-danger"></div>
+                    </div>
+                    <div class="form-gp">
+                        <label for="FullName">@Html.DisplayNameFor(model => model.LastName)</label>
+                        <input type="text" id="FullName" name="LastName">
+                        <i class="ti-user"></i>
+                        <div class="text-danger"></div>
+                    </div>
+                    <div class="form-gp">
+                        <label for="PersonalEmail">@Html.DisplayNameFor(model => model.PersonalEmail)</label>
+                        <input type="email" id="PersonalEmail" name="PersonalEmail">
+                        <i class="ti-email"></i>
+                        <div class="text-danger"></div>
+                    </div>
+                    <div class="form-gp">
+                        <label for="PersonalEmail">@Html.DisplayNameFor(model => model.MobileNumber)</label>
+                        <input type="text" id="PersonalEmail" name="MobileNumber">
+                        <i class="ti-email"></i>
+                        <div class="text-danger"></div>
+                    </div>
+                    <div class="form-gp">
+                        <label for="Password">@Html.DisplayNameFor(model => model.Password)</label>
+                        <input type="password" id="Password"  name="Password">
+                        <i class="ti-lock"></i>
+                        <div class="text-danger"></div>
+                    </div>
+                    <div class="form-gp">
+                        <label for="ConfirmPassword">Confirm Password</label>
+                        <input type="password" id="ConfirmPassword">
+                        <i class="ti-lock"></i>
+                        <div class="text-danger"></div>
+                    </div>
+                    <div class="submit-btn-area">
+                        <button id="form_submit" type="submit">Submit <i class="ti-arrow-right"></i></button>
+                        <div class="login-other row mt-4">
+                            <div class="col-6">
+                                <a class="fb-login" href="#">Sign up with <i class="fa fa-facebook"></i></a>
+                            </div>
+                            <div class="col-6">
+                                <a class="google-login" href="#">Sign up with <i class="fa fa-google"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-footer text-center mt-5">
+                        <p class="text-muted">Don't have an account? <a href="@Url.Action("Login", "User", new { Area = "" })">Sign in</a></p>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- login area end -->
+@if (TempData["ErrorMessage"] != null)
+{
+    <script type='text/javascript'>
+        toastr.error('@TempData["ErrorMessage"]');
+    </script>
+    TempData.Remove("ErrorMessage");
+}

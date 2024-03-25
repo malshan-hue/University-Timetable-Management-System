@@ -1,0 +1,5 @@
+﻿
+/*for datalist table section row count select*/
+div.dataTables_wrapper div.dataTables_length select{
+    width: 76px;
+}
