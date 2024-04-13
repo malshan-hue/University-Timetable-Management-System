@@ -17,6 +17,7 @@ builder.Configuration.AddJsonFile("applicationurl.json");
 //register interface and implementation
 #region services
 builder.Services.AddSingleton<IApplicationUrl, ApplicationUrlImpl>();
+builder.Services.AddSingleton<IGmailService, GmailServiceImpl>();
 #endregion
 
 var app = builder.Build();

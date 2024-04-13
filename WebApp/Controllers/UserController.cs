@@ -18,10 +18,12 @@ namespace WebApp.Controllers
     public class UserController : Controller
     {
         private readonly IApplicationUrl _applicationUrl;
+        private readonly IGmailService _gmailService;
 
-        public UserController(IApplicationUrl applicationUrl)
+        public UserController(IApplicationUrl applicationUrl, IGmailService gmailService)
         {
             _applicationUrl = applicationUrl;
+            _gmailService = gmailService;
         }
 
         [HttpGet]
@@ -200,6 +202,9 @@ namespace WebApp.Controllers
 
                     if (response.IsSuccessStatusCode && response.StatusCode.Equals(HttpStatusCode.Created))
                     {
+                        var subject = "Signup Success";
+                        var mailBody = "Your username will be " + userModel.OfficialEmail;
+                        var emailStatus = await _gmailService.SendEmail(new string[] { userModel.PersonalEmail }, subject, mailBody);
                         return RedirectToAction("Login");
                     }
                     else
