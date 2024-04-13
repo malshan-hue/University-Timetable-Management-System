@@ -11,13 +11,17 @@ using NuGet.Protocol.Plugins;
 using System.Security.Cryptography.Xml;
 using NuGet.Common;
 using System.Net.Http.Headers;
+using BusinessLayer.GlobalServices.Interfaces;
 
 namespace WebApp.Controllers
 {
     public class UserController : Controller
     {
-        public UserController()
+        private readonly IApplicationUrl _applicationUrl;
+
+        public UserController(IApplicationUrl applicationUrl)
         {
+            _applicationUrl = applicationUrl;
         }
 
         [HttpGet]
@@ -65,7 +69,9 @@ namespace WebApp.Controllers
             if(userModel.UserName != null && userModel.Password != null)
             {
                 var userJsonString = JsonConvert.SerializeObject(userModel);
-                var api = "http://localhost:4000/login";
+                //var api = "http://localhost:4000/login";
+                var baseUrl = await _applicationUrl.GetApplicationUrl();
+                var api = baseUrl + "/login";
 
                 using (var httpClient = new HttpClient())
                 {
@@ -180,7 +186,9 @@ namespace WebApp.Controllers
             userModel.PasswordSalt = crypto.Salt;
 
             var userJsonString = JsonConvert.SerializeObject(userModel);
-            var api = "http://localhost:4000/signup";
+            //var api = "http://localhost:4000/signup";
+            var baseUrl = await _applicationUrl.GetApplicationUrl();
+            var api = baseUrl + "/signup";
 
             using(var httpClient = new HttpClient())
             {

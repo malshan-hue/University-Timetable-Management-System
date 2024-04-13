@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BusinessLayer.GlobalServices.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net;
 using System.Net.Http.Headers;
@@ -12,6 +13,13 @@ namespace WebApp.Areas.AdminPortal.Controllers
     [Area("AdminPortal")]
     public class CourseController : Controller
     {
+        private readonly IApplicationUrl _applicationUrl;
+
+        public CourseController(IApplicationUrl applicationUrl)
+        {
+            _applicationUrl = applicationUrl;
+        }
+
         public async Task<IActionResult> Index()
         {
             return View();
@@ -20,7 +28,9 @@ namespace WebApp.Areas.AdminPortal.Controllers
         [HttpPost]
         public async Task<IActionResult> LoadCourseData()
         {
-            var api = "http://localhost:4000/get-courses";
+            //var api = "http://localhost:4000/get-courses";
+            var baseUrl = await _applicationUrl.GetApplicationUrl();
+            var api = baseUrl + "/get-courses";
 
             IEnumerable<Course> courses = new List<Course>();
             var totalCount = 0;
@@ -76,7 +86,9 @@ namespace WebApp.Areas.AdminPortal.Controllers
             course.CourseId = Guid.NewGuid();
 
             var courseJsonString = JsonConvert.SerializeObject(course);
-            var api = "http://localhost:4000/create-course";
+            //var api = "http://localhost:4000/create-course";
+            var baseUrl = await _applicationUrl.GetApplicationUrl();
+            var api = baseUrl + "/create-course";
 
             using (var httpClient = new HttpClient())
             {
@@ -110,7 +122,9 @@ namespace WebApp.Areas.AdminPortal.Controllers
         [HttpGet]
         public async Task<IActionResult> EditCourse(string courseId)
         {
-            var api = "http://localhost:4000/get-course/";
+            //var api = "http://localhost:4000/get-course/";
+            var baseUrl = await _applicationUrl.GetApplicationUrl();
+            var api = baseUrl + "/get-course/";
 
             using (var httpClient = new HttpClient())
             {
@@ -144,7 +158,9 @@ namespace WebApp.Areas.AdminPortal.Controllers
         public async Task<IActionResult> EditCourse(Course course)
         {
             var courseJsonString = JsonConvert.SerializeObject(course);
-            var api = "http://localhost:4000/edit-course/";
+            //var api = "http://localhost:4000/edit-course/";
+            var baseUrl = await _applicationUrl.GetApplicationUrl();
+            var api = baseUrl + "/edit-course/";
 
             using (var httpClient = new HttpClient())
             {
@@ -177,7 +193,9 @@ namespace WebApp.Areas.AdminPortal.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteCourse(string courseId)
         {
-            var api = "http://localhost:4000/delete-course/";
+            //var api = "http://localhost:4000/delete-course/";
+            var baseUrl = await _applicationUrl.GetApplicationUrl();
+            var api = baseUrl + "/delete-course/";
 
             using (var httpClient = new HttpClient())
             {
@@ -208,7 +226,9 @@ namespace WebApp.Areas.AdminPortal.Controllers
         [HttpGet]
         public async Task<IActionResult> GetFacultyListJson()
         {
-            var api = "http://localhost:4000/get-faculties";
+            //var api = "http://localhost:4000/get-faculties";
+            var baseUrl = await _applicationUrl.GetApplicationUrl();
+            var api = baseUrl + "/get-faculties";
 
             using (var httpClient = new HttpClient())
             {

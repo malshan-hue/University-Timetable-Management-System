@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BusinessLayer.GlobalServices.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
@@ -14,6 +15,12 @@ namespace WebApp.Areas.AdminPortal.Controllers
     [Area("AdminPortal")]
     public class ClassSessionController : Controller
     {
+        private readonly IApplicationUrl _applicationUrl;
+
+        public ClassSessionController(IApplicationUrl applicationUrl)
+        {
+            _applicationUrl = applicationUrl;
+        }
         public IActionResult Index()
         {
             return View();
@@ -22,7 +29,9 @@ namespace WebApp.Areas.AdminPortal.Controllers
         [HttpPost]
         public async Task<IActionResult> LoadClassSessionData()
         {
-            var api = "http://localhost:4000/get-classsessions";
+            //var api = "http://localhost:4000/get-classsessions";
+            var baseUrl = await _applicationUrl.GetApplicationUrl();
+            var api = baseUrl + "/get-classsessions";
 
             IEnumerable<ClassSession> classSessions = new List<ClassSession>();
             var totalCount = 0;
@@ -77,7 +86,9 @@ namespace WebApp.Areas.AdminPortal.Controllers
             classSession.ClassSessionId = Guid.NewGuid();
 
             var classSessionJsonString = JsonConvert.SerializeObject(classSession);
-            var api = "http://localhost:4000/create-classsession";
+            //var api = "http://localhost:4000/create-classsession";
+            var baseUrl = await _applicationUrl.GetApplicationUrl();
+            var api = baseUrl + "/create-classsession";
 
             using (var httpClient = new HttpClient())
             {
@@ -111,7 +122,9 @@ namespace WebApp.Areas.AdminPortal.Controllers
         [HttpGet]
         public async Task<IActionResult> EditClassSession(string classSessionId)
         {
-            var api = "http://localhost:4000/get-classsession/";
+            //var api = "http://localhost:4000/get-classsession/";
+            var baseUrl = await _applicationUrl.GetApplicationUrl();
+            var api = baseUrl + "/get-classsession/";
 
             using (var httpClient = new HttpClient())
             {
@@ -149,7 +162,9 @@ namespace WebApp.Areas.AdminPortal.Controllers
         public async Task<IActionResult> EditClassSession(ClassSession classSession)
         {
             var classSessionJsonString = JsonConvert.SerializeObject(classSession);
-            var api = "http://localhost:4000/edit-classsession/";
+            //var api = "http://localhost:4000/edit-classsession/";
+            var baseUrl = await _applicationUrl.GetApplicationUrl();
+            var api = baseUrl + "/edit-classsession/";
 
             using (var httpClient = new HttpClient())
             {
@@ -182,7 +197,9 @@ namespace WebApp.Areas.AdminPortal.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteClassSession(string classSessionId)
         {
-            var api = "http://localhost:4000/delete-classsession/";
+            //var api = "http://localhost:4000/delete-classsession/";
+            var baseUrl = await _applicationUrl.GetApplicationUrl();
+            var api = baseUrl + "/delete-classsession/";
 
             using (var httpClient = new HttpClient())
             {
@@ -213,7 +230,9 @@ namespace WebApp.Areas.AdminPortal.Controllers
         [HttpGet]
         public async Task<IActionResult> GetFacultyListJson()
         {
-            var api = "http://localhost:4000/get-faculties";
+            //var api = "http://localhost:4000/get-faculties";
+            var baseUrl = await _applicationUrl.GetApplicationUrl();
+            var api = baseUrl + "/get-faculties";
 
             using (var httpClient = new HttpClient())
             {
@@ -253,7 +272,9 @@ namespace WebApp.Areas.AdminPortal.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCourseListJson()
         {
-            var api = "http://localhost:4000/get-courses";
+            //var api = "http://localhost:4000/get-courses";
+            var baseUrl = await _applicationUrl.GetApplicationUrl();
+            var api = baseUrl + "/get-courses";
 
             using (var httpClient = new HttpClient())
             {

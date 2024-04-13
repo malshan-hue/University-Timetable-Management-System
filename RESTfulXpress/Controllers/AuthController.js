@@ -1,6 +1,10 @@
 const UserModel = require("../Models/UserModel")
 const { createToken } = require("../Util/TokenHandler");
 
+module.exports.Welcome = async (req, res) => {
+    res.json({ message: "Welcome UTMS API!" });
+};
+
 module.exports.Login = async (req, res, next) => {
 
     try {

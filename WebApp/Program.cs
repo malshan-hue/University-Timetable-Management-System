@@ -1,3 +1,6 @@
+using BusinessLayer.GlobalServices;
+using BusinessLayer.GlobalServices.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,6 +8,16 @@ builder.Services.AddControllersWithViews();
 
 // Add session service
 builder.Services.AddSession();
+
+//load json files and add ti configuration
+#region json files
+builder.Configuration.AddJsonFile("applicationurl.json");
+#endregion
+
+//register interface and implementation
+#region services
+builder.Services.AddSingleton<IApplicationUrl, ApplicationUrlImpl>();
+#endregion
 
 var app = builder.Build();
 

@@ -1,0 +1,4 @@
+{
+  //"BaseUrl": "http://localhost:4000"
+  "BaseUrl": "https://utms-rest-api-v1.azurewebsites.net"
+}

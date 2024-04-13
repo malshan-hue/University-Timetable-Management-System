@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BusinessLayer.GlobalServices.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net;
@@ -11,6 +12,11 @@ namespace WebApp.Areas.AdminPortal.Controllers
     [Area("AdminPortal")]
     public class FacultyController : Controller
     {
+        private readonly IApplicationUrl _applicationUrl;
+        public FacultyController(IApplicationUrl applicationUrl)
+        {
+            _applicationUrl = applicationUrl;
+        }
         public async Task<IActionResult> Index()
         {
             return View();
@@ -19,9 +25,11 @@ namespace WebApp.Areas.AdminPortal.Controllers
         [HttpPost]
         public async Task<IActionResult> LoadFacultyData()
         {
-            var api = "http://localhost:4000/get-faculties";
+            //var api = "http://localhost:4000/get-faculties";
+            var baseUrl = await _applicationUrl.GetApplicationUrl();
+            var api = baseUrl + "/get-faculties";
 
-            using(var httpClient = new HttpClient())
+            using (var httpClient = new HttpClient())
             {
                 try
                 {
@@ -73,9 +81,11 @@ namespace WebApp.Areas.AdminPortal.Controllers
             faculty.FacultyId = Guid.NewGuid();
 
             var facultyJsonString = JsonConvert.SerializeObject(faculty);
-            var api = "http://localhost:4000/create-faculty";
+            //var api = "http://localhost:4000/create-faculty";
+            var baseUrl = await _applicationUrl.GetApplicationUrl();
+            var api = baseUrl + "/create-faculty";
 
-            using(var httpClient = new HttpClient())
+            using (var httpClient = new HttpClient())
             {
                 var content = new StringContent(facultyJsonString, Encoding.UTF8, "application/json");
 
@@ -106,9 +116,11 @@ namespace WebApp.Areas.AdminPortal.Controllers
         [HttpGet]
         public async Task<IActionResult> EditFaculty(string facultyId)
         {
-            var api = "http://localhost:4000/get-faculty/";
+            //var api = "http://localhost:4000/get-faculty/";
+            var baseUrl = await _applicationUrl.GetApplicationUrl();
+            var api = baseUrl + "/get-faculty/";
 
-            using(var httpClient = new HttpClient())
+            using (var httpClient = new HttpClient())
             {
                 try
                 {
@@ -140,7 +152,9 @@ namespace WebApp.Areas.AdminPortal.Controllers
         public async Task<IActionResult> EditFaculty(Faculty faculty)
         {
             var facultyJsonString = JsonConvert.SerializeObject(faculty);
-            var api = "http://localhost:4000/edit-faculty/";
+            //var api = "http://localhost:4000/edit-faculty/";
+            var baseUrl = await _applicationUrl.GetApplicationUrl();
+            var api = baseUrl + "/edit-faculty/";
 
             using (var httpClient = new HttpClient())
             {
@@ -173,7 +187,9 @@ namespace WebApp.Areas.AdminPortal.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteFaculty(string facultyId)
         {
-            var api = "http://localhost:4000/delete-faculty/";
+            //var api = "http://localhost:4000/delete-faculty/";
+            var baseUrl = await _applicationUrl.GetApplicationUrl();
+            var api = baseUrl + "/delete-faculty/";
 
             using (var httpClient = new HttpClient())
             {
